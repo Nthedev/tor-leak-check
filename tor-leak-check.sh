@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-## Add Safe Cofiguration option in new .conf file
+## Add Safe Configuration option in new .conf file
 sudo touch /etc/tor/torrc.d/no-leaks.conf
 if ! sudo grep -q "SafeSocks 1" /etc/tor/torrc.d/no-leaks.conf; then
     echo "SafeSocks 1" | sudo tee -a /etc/tor/torrc.d/no-leaks.conf > /dev/null
@@ -18,12 +18,18 @@ else sudo systemctl reload-or-restart tor
 fi
 sleep 1
 
-
+attempts="0"
 while true; do
-    if systemctl is-active --quiet tor; then
-        echo "tor daemon started successfully"
-        break
-    else sleep 1
+    if [ "$attempts" = 20 ]; then
+        echo "Failed waiting for tor to start"
+        exit 1
+    else
+        if systemctl is-active --quiet tor; then
+            echo "Tor daemon started successfully"
+            break
+        else sleep 1
+            attempts=$(("$attempts+1"))
+        fi
     fi
 done
 
@@ -41,7 +47,7 @@ printf "Anonymized ip address:\nipv4: %s \n ipv6: %s" "$torip" "$toripv6"
 if [[ "$ip" != "$torip" ]] && [[ "$ipv6" != "$toripv6" ]]; then
     echo "No IP leaks detected"
 else
-    echo "Leak detected! Your tor ip address matches your normal ip address."
+    echo "Leak detected! Your Tor ip address matches your normal ip address."
     exit 1
 fi
 
@@ -49,4 +55,4 @@ fi
 ## Use ipleak.net to check for other ip leaking vectors (Web-RTC, DNS, etc.)
 ## Opens system browser, also recommends doing the same with tor browser
 torify xdg-open https://ipleak.net
-printf "Opened https://ipleak.net \n if your browser did not open, please open a a browser with torify YOUR BROWSER (for example brave), then visit https://ipleak.net \n Also make sure to visit https://ipleak.net in tor browser \n it is possible, that this doesn't work and shows your real ip address, do not panic, open your browser settings and add a Socks5 Proxy at 127.0.0.1:9050 \n Note: This script does not guarentee no leaks, but aims to configure tor in a more private way"
+printf "Opened https://ipleak.net \n if your browser did not open, please open a a browser with torify YOUR BROWSER (for example brave), then visit https://ipleak.net \n Also make sure to visit https://ipleak.net in Tor browser \n it is possible, that this doesn't work and shows your real ip address, do not panic, open your browser settings and add a Socks5 Proxy at 127.0.0.1:9050 \n Note: This script does not guarentee no leaks, but aims to configure Tor in a more private way"
