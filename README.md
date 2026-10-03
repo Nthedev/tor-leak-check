@@ -76,6 +76,16 @@ While this script configures the daemon and terminal routing, browser-level leak
 3. Open the official **Tor Browser**, visit [https://ipleak.net](https://ipleak.net), and ensure it remains fully anonymous.
 4. *(Optional)* If `ipleak.net` shows your real IP in a standard browser, don't panic. Check your browser's proxy settings and ensure the SOCKS5 Proxy is strictly pointing to `127.0.0.1:9050`.
 
+## 🗑️ Uninstall / Revert Changes
+
+If you wish to undo the configuration changes made by this script and return Tor to its default state, run the following commands:
+
+```bash
+sudo rm /etc/tor/torrc.d/no-leaks.conf
+sudo sed -i '\|%include /etc/tor/torrc.d/no-leaks.conf|d' /etc/tor/torrc
+sudo systemctl restart tor
+```
+
 ## ⚠️ Disclaimer
 
 > This script does not guarantee 100% anonymity or that no leaks exist. It is designed to configure Tor in a more private way and assist in basic network leak checks. Always perform comprehensive manual testing for full operational security (OPSEC).
