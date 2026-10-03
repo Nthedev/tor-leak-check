@@ -16,8 +16,16 @@ if ! systemctl is-active --quiet tor; then
     sudo systemctl start tor || { echo "Failed to start Tor"; exit 1; }
 else sudo systemctl reload-or-restart tor
 fi
-sleep 5  # Wait for Tor circuits to establish
+sleep 1
 
+
+while true; do
+    if systemctl is-active --quiet tor; then
+        echo "tor daemon started successfully"
+        break
+    else sleep 1
+    fi
+done
 
 ## Fetch "normal" ip address and ip address after routing traffic through tor
 ip=$(curl -s --max-time 10 https://api.ipify.org)
