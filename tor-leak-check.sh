@@ -22,11 +22,11 @@ sleep 5  # Wait for Tor circuits to establish
 ## Fetch "normal" ip address and ip address after routing traffic through tor
 ip=$(curl -s --max-time 10 https://api.ipify.org)
 ipv6=$(curl -s --max-time 10 https://api6.ipify.org)
-echo "Public ip address: \n ipv4: $ip \n ipv6: $ipv6"
+printf "Public ip address:\nipv4: %s \n ipv6: %s\n" "$ip" "$ipv6"
 
 torip=$(torify curl -s --max-time 10 https://api.ipify.org || echo "Error while fetching tor ip address")
 toripv6=$(torify curl -s --max-time 10 https://api6.ipify.org)
-echo "Anonymized ip address: \n ipv4: $torip \n ipv6: $toripv6"
+printf "Anonymized ip address:\nipv4: %s \n ipv6: %s" "$torip" "$toripv6"
 
 
 ## Compare tor and non-tor ip address to check if tor is working properly
@@ -41,4 +41,4 @@ fi
 ## Use ipleak.net to check for other ip leaking vectors (Web-RTC, DNS, etc.)
 ## Opens system browser, also recommends doing the same with tor browser
 torify xdg-open https://ipleak.net
-echo "Opened https://ipleak.net \n if your browser did not open, please open a a browser with torify YOUR BROWSER (for example brave), then visit https://ipleak.net \n Also make sure to visit https://ipleak.net in tor browser \n it is possible, that this doesn't work and shows your real ip address, do not panic, open your browser settings and add a Socks5 Proxy at 127.0.0.1:9050 \n Note: This script does not guarentee no leaks, but aims to configure tor in a more private way"
+printf "Opened https://ipleak.net \n if your browser did not open, please open a a browser with torify YOUR BROWSER (for example brave), then visit https://ipleak.net \n Also make sure to visit https://ipleak.net in tor browser \n it is possible, that this doesn't work and shows your real ip address, do not panic, open your browser settings and add a Socks5 Proxy at 127.0.0.1:9050 \n Note: This script does not guarentee no leaks, but aims to configure tor in a more private way"
