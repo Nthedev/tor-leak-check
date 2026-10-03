@@ -1,3 +1,6 @@
+![License](https://img.shields.io/github/license/Nthedev/tor-leak-check)
+![Shell](https://img.shields.io/badge/language-Shell-green)
+
 # 🧅 tor-leak-check
 
 A lightweight Bash script designed to help you verify if you are leaking Personally Identifiable Information (PII) — specifically your real IP address — while connected to the Tor network. It also automatically configures Tor for safer SOCKS proxy usage and launches browser-based leak tests.
