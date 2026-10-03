@@ -14,7 +14,7 @@ echo "Added Tor safe configuration option"
 if ! systemctl is-active --quiet tor; then
     echo "Starting Tor (requires privileges)"
     sudo systemctl start tor || { echo "Failed to start Tor"; exit 1; }
-else systemctl reload-or-restart tor
+else sudo systemctl reload-or-restart tor
 fi
 sleep 5  # Wait for Tor circuits to establish
 
