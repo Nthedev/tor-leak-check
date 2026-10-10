@@ -18,20 +18,21 @@ else sudo systemctl reload-or-restart tor
 fi
 sleep 1
 
-attempts="0"
-while true; do
-    if [ "$attempts" = 20 ]; then
-        echo "Failed waiting for tor to start"
-        exit 1
-    else
-        if systemctl is-active --quiet tor; then
-            echo "Tor daemon started successfully"
-            break
-        else sleep 1
-            attempts=$(("$attempts+1"))
-        fi
-    fi
+finished=false
+
+for ((attempt = 1; attempt <= 15; attempt++)); do
+  if systemctl is-active --quiet tor; then
+    finished=true
+    break
+  fi
+  sleep 1
 done
+
+if [[ $finished == false ]]; then
+  echo "Tor failed to start"
+  exit 1
+fi
+
 
 ## Fetch "normal" ip address and ip address after routing traffic through tor
 ip=$(curl -s --max-time 10 https://api.ipify.org)
