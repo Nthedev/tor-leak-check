@@ -1,18 +1,17 @@
 ![License](https://img.shields.io/github/license/Nthedev/tor-leak-check)
 ![Shell](https://img.shields.io/badge/language-Shell-green)
 
-# 🧅 tor-leak-check
+# Overview
 
-A lightweight Bash script designed to help you verify if you are leaking Personally Identifiable Information (PII) — specifically your real IP address — while connected to the Tor network. It also automatically configures Tor for safer SOCKS proxy usage and launches browser-based leak tests.
+A lightweight Bash script designed to help you check for and prevent leaking your IP address while using Tor with SOCKS. It also automatically configures Tor for safer SOCKS proxy usage and launches a browser-based leak test.
 
-## 🚀 Features
+## What it does
 
 - **Automatic Tor Hardening**: Configures your Tor daemon with `SafeSocks 1` to prevent unsafe SOCKS connections that might leak DNS or IP data.
-- **Startup Verification**: Automatically starts/restarts the Tor service and waits (with a timeout) for the daemon to become fully active.
 - **IP Leak Detection**: Compares your system's actual public IPv4 and IPv6 addresses against the addresses routed through the Tor proxy to detect IP leaks.
 - **Browser-Based Testing**: Automatically launches [ipleak.net](https://ipleak.net) via `torify` to check for more complex leaks like WebRTC, DNS, and Torrent leaks.
 
-## 📋 Prerequisites
+## Dependencies
 
 This script is intended for **Linux** systems and requires the following packages to be installed:
 
@@ -33,7 +32,7 @@ sudo apt install tor torsocks curl xdg-utils
 sudo pacman -S tor torsocks curl xdg-utils
 ```
 
-## 📦 Installation
+## Installation
 
 1. Clone the repository:
    ```bash
@@ -48,9 +47,9 @@ sudo pacman -S tor torsocks curl xdg-utils
    chmod +x tor-leak-check.sh
    ```
 
-## 🖥️ Usage
+## Usage
 
-Run the script from your terminal. You will be prompted for your `sudo` password, as the script needs elevated privileges to modify Tor's configuration files (`/etc/tor/torrc`) and manage the `systemd` service.
+After running the script You will be prompted for your `sudo` password, as the script needs elevated privileges to modify Tor's configuration files (`/etc/tor/torrc`) and manage the `systemd` service.
 
 ```bash
 ./tor-leak-check.sh
@@ -58,13 +57,12 @@ Run the script from your terminal. You will be prompted for your `sudo` password
 
 ### What to expect:
 1. The script will write `SafeSocks 1` to `/etc/tor/torrc.d/no-leaks.conf` and include it in your main `torrc`.
-2. It will start or restart the Tor daemon and wait up to 20 seconds for it to initialize.
-3. It will fetch your real IPv4 and IPv6 addresses and print them to the console.
-4. It will fetch your anonymized (Tor-routed) IPv4 and IPv6 addresses and compare them.
-5. If your real IPs match your Tor IPs, it will alert you of a **Leak detected!**
-6. Finally, it will attempt to open `https://ipleak.net` in your default browser via `torify`. Follow the on-screen instructions to also test your Tor Browser.
+2. It will fetch your real IPv4 and IPv6 addresses and print them to the console.
+3. It will fetch your anonymized (Tor-routed) IPv4 and IPv6 addresses and compare them.
+4. If your real IPs match your Tor IPs, it will alert you of a **Leak detected!**
+5. Finally, it will attempt to open `https://ipleak.net` in your default browser via `torify`. Follow the on-screen instructions to also test your Tor Browser.
 
-## 🛡️ Manual Browser Testing (Recommended)
+## Manual Browser Testing (Recommended)
 
 While this script configures the daemon and terminal routing, browser-level leaks (like WebRTC) must be tested manually:
 
@@ -76,7 +74,7 @@ While this script configures the daemon and terminal routing, browser-level leak
 3. Open the official **Tor Browser**, visit [https://ipleak.net](https://ipleak.net), and ensure it remains fully anonymous.
 4. *(Optional)* If `ipleak.net` shows your real IP in a standard browser, don't panic. Check your browser's proxy settings and ensure the SOCKS5 Proxy is strictly pointing to `127.0.0.1:9050`.
 
-## 🗑️ Uninstall / Revert Changes
+## Uninstall / Revert Changes
 
 If you wish to undo the configuration changes made by this script and return Tor to its default state, run the following commands:
 
