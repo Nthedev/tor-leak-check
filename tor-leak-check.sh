@@ -18,42 +18,54 @@ else sudo systemctl reload-or-restart tor
 fi
 sleep 1
 
-finished=false
-
-for ((attempt = 1; attempt <= 15; attempt++)); do
-  if systemctl is-active --quiet tor; then
-    finished=true
-    break
-  fi
-  sleep 1
+attempts="0"
+while true; do
+    if [ "$attempts" = 20 ]; then
+        echo "Failed waiting for tor to start"
+        exit 1
+    else
+        if systemctl is-active --quiet tor; then
+            echo "Tor daemon started successfully"
+            break
+        else sleep 1
+            attempts=$(("$attempts+1"))
+        fi
+    fi
 done
-
-if [[ $finished == false ]]; then
-  echo "Tor failed to start"
-  exit 1
-fi
-
 
 ## Fetch "normal" ip address and ip address after routing traffic through tor
 ip=$(curl -s --max-time 10 https://api.ipify.org)
 ipv6=$(curl -s --max-time 10 https://api6.ipify.org)
 printf "Public ip address:\nipv4: %s \n ipv6: %s\n" "$ip" "$ipv6"
 
-torip=$(torify curl -s --max-time 10 https://api.ipify.org || echo "Error while fetching tor ip address")
+torip=$(torify curl -s --max-time 10 https://api.ipify.org)
 toripv6=$(torify curl -s --max-time 10 https://api6.ipify.org)
 printf "Anonymized ip address:\nipv4: %s \n ipv6: %s" "$torip" "$toripv6"
 
 
-## Compare tor and non-tor ip address to check if tor is working properly
-if [[ "$ip" != "$torip" ]] && [[ "$ipv6" != "$toripv6" ]]; then
-    echo "No IP leaks detected"
-else
-    echo "Leak detected! Your Tor ip address matches your normal ip address."
+## Check if a request came back empty and check if the tor ip address matches the user's public ip address indicating a tor leak 
+if [[ "$ip" = "" ]]; then
+    echo "IPv4 is not working"
+elif [[ "$torip" = "" ]]; then
+    echo "tor IPv4 is not working" 
+elif [[ "$ip" != "$torip" ]]; then 
+    echo "No IPv4 leaks detected"
+else echo "IPv4 leak detected"
+    exit 1
+fi
+
+if [[ "$ipv6" = "" ]]; then
+    echo "IPv6 is not working"
+elif [[ "$toripv6" = "" ]]; then
+    echo "tor IPv6 is not working"
+elif [[ "$ipv6" != "$toripv6" ]]; then
+    echo "No IPv6 leaks detected"
+else echo "IPv6 leak detected"
     exit 1
 fi
 
 ## Open a browser to make sure local SOCKS5 proxy is working
 ## Use ipleak.net to check for other ip leaking vectors (Web-RTC, DNS, etc.)
 ## Opens system browser, also recommends doing the same with tor browser
-torify xdg-open https://ipleak.net
+torify xdg-open https://ipleak.net # remove this soon
 printf "Opened https://ipleak.net \n if your browser did not open, please open a a browser with torify YOUR BROWSER (for example brave), then visit https://ipleak.net \n Also make sure to visit https://ipleak.net in Tor browser \n it is possible, that this doesn't work and shows your real ip address, do not panic, open your browser settings and add a Socks5 Proxy at 127.0.0.1:9050 \n Note: This script does not guarentee no leaks, but aims to configure Tor in a more private way"
