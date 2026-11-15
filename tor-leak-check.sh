@@ -1,6 +1,7 @@
 #!/usr/bin/bash
 
 ## Add Safe Configuration option in new .conf file
+ls /etc/tor/torrc.d 2> /dev/null || sudo mkdir -p /etc/tor/torrc.d
 sudo touch /etc/tor/torrc.d/no-leaks.conf
 if ! sudo grep -q "SafeSocks 1" /etc/tor/torrc.d/no-leaks.conf; then
     echo "SafeSocks 1" | sudo tee -a /etc/tor/torrc.d/no-leaks.conf > /dev/null
