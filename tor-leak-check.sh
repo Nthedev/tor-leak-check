@@ -65,8 +65,7 @@ else echo "IPv6 leak detected"
     exit 1
 fi
 
-## Open a browser to make sure local SOCKS5 proxy is working
+
 ## Use ipleak.net to check for other ip leaking vectors (Web-RTC, DNS, etc.)
-## Opens system browser, also recommends doing the same with tor browser
-torify xdg-open https://ipleak.net # remove this soon
-printf "Opened https://ipleak.net \n if your browser did not open, please open a a browser with torify YOUR BROWSER (for example brave), then visit https://ipleak.net \n Also make sure to visit https://ipleak.net in Tor browser \n it is possible, that this doesn't work and shows your real ip address, do not panic, open your browser settings and add a Socks5 Proxy at 127.0.0.1:9050 \n Note: This script does not guarentee no leaks, but aims to configure Tor in a more private way"
+
+printf "If you would like to route your browser traffic through tor, use the official tor browser, then visit https://ipleak.net and https://check.torproject.org \n"
